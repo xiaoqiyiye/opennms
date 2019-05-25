@@ -713,9 +713,73 @@
           </lifecycleMappingMetadata>
         </configuration>
       </plugin>    
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.4</version>
+        <configuration>
+          <!-- TODO: Figure out how to configure this to be the same path for all projects -->
+          <classDumpDir>${opennms.build.basedir}/target/jacoco/classes</classDumpDir>
+          <!-- TODO: Figure out how to configure this to be the same path for all projects -->
+          <destFile>${opennms.build.basedir}/target/jacoco/jacoco.exec</destFile>
+          <!-- Append all .exec content to the same file -->
+          <append>true</append>
+          <includes>
+            <!-- All OpenNMS Java packages -->
+            <include>org/opennms/**</include>
+            <include>liquibase/ext/opennms/**</include>
+            <include>org/openoss/opennms/**</include>
+          </includes>
+          <excludes>
+            <!-- Spring CGLIB proxies -->
+            <exclude>**/*FastClassBySpringCGLIB*</exclude>
+            <exclude>**/*EnhancerBySpringCGLIB*</exclude>
+            <!-- CGLIB proxies -->
+            <exclude>**/*EnhancerByCGLIB*</exclude>
+            <!-- javassist proxies -->
+            <exclude>**/*_jvst*</exclude>
+            <!-- Unit test classes -->
+            <exclude>**/*Test.*</exclude>
+            <exclude>**/*TestCase.*</exclude>
+            <exclude>**/*IT.*</exclude>
+            <exclude>**/*ITCase.*</exclude>
+            <!-- Duplicate classes -->
+            <exclude>**/SnmpUtilsTest*</exclude>
+            <!-- Drools rules -->
+            <exclude>org/opennms/netmgt/correlation/drools/Println*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M2</version>
+      </plugin>
     </plugins>
   </pluginManagement>
    <plugins>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-enforcer-plugin</artifactId>
+       <executions>
+         <execution>
+           <id>enforce-maven</id>
+           <goals>
+             <goal>enforce</goal>
+           </goals>
+           <configuration>
+             <rules>
+               <requireMavenVersion>
+                 <version>3.6.1</version>
+               </requireMavenVersion>
+               <requireJavaVersion>
+                 <version>[1.8.0,9)</version>
+               </requireJavaVersion>
+             </rules>
+           </configuration>
+         </execution>
+       </executions>
+     </plugin>
      <plugin>
        <groupId>org.apache.maven.plugins</groupId>
        <artifactId>maven-clean-plugin</artifactId>
@@ -801,17 +865,6 @@
           <execution>
             <phase>validate</phase>
             <configuration>
-              <target>
-                <condition property="java.versionokay">
-                  <or>
-                    <!-- Don't forget to update the <fail> message below -->
-                    <contains string="${java.version}" substring="1.8."/>
-                    <contains string="${java.vm.version}" substring="1.8."/>
-                  </or>
-                </condition>
-                <fail unless="java.versionokay">You must use Java 1.8 to build!</fail>
-                <echo message="update policy is ${updatePolicy}"/>
-              </target>
               <target>
                 <property name="opennms.build.basedir" location="." />
                 <echo message="base directory is ${opennms.build.basedir}" />
