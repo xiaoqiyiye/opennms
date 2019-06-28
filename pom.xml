@@ -1332,7 +1332,7 @@
     <protobufVersion>3.6.1</protobufVersion>
     <protobuf2Version>2.6.1</protobuf2Version>
     <postgresqlVersion>42.2.5</postgresqlVersion>
-    <powermockVersion>1.6.4</powermockVersion>
+    <powermockVersion>2.0.2</powermockVersion>
     <opennmsApiVersion>0.2.1-SNAPSHOT</opennmsApiVersion>
     <osgiVersion>6.0.0</osgiVersion>
     <osgiCompendiumVersion>5.0.0</osgiCompendiumVersion>
