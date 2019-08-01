@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+PATH=~/project/maven/bin:$PATH
+export PATH
+
 remove_paths()
 {
     while read -r data; do
