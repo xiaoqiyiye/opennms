@@ -40,8 +40,6 @@ import org.bson.BsonInt64;
 import org.bson.BsonString;
 import org.bson.BsonValue;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 public class BsonUtils {
 
     private BsonUtils() {
