@@ -111,7 +111,7 @@ commands:
           no_output_timeout: 30m
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             sudo apt -y install openjdk-11-jdk
             .circleci/scripts/smoke.sh << parameters.minimal >>
       - run:
@@ -162,8 +162,8 @@ commands:
           name: Compile OpenNMS
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-            apt -y install openjdk-11-jdk
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+            yum -y install java-11-openjdk-devel
             mvn clean -DskipTests=true
             << parameters.node-memory >>
             ./compile.pl -DskipTests=true -Dbuild.skip.tarball=true \
@@ -178,8 +178,8 @@ commands:
             # to maintain another cache
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-            sudo apt -y install openjdk-11-jdk
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+            yum -y install java-11-openjdk-devel
             cd smoke-test && mvn install -DskipTests=true -DskipITs=true
       - save-maven-cache
       - save-nodejs-cache
@@ -207,7 +207,7 @@ commands:
           no_output_timeout: 1.0h
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export CCI_CODE_COVERAGE=<< parameters.run-code-coverage >>
             export CCI_RERUN_FAILTEST=<< parameters.rerun-failtest-count >>
             export CCI_FAILURE_OPTION=<< parameters.failure-option >>
@@ -267,7 +267,7 @@ commands:
           no_output_timeout: 1.0h
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export CCI_CODE_COVERAGE=<< parameters.run-code-coverage >>
             export CCI_RERUN_FAILTEST=<< parameters.rerun-failtest-count >>
             export CCI_FAILURE_OPTION=<< parameters.failure-option >>
@@ -407,7 +407,7 @@ jobs:
           name: Build RPMs
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             sudo apt -y install openjdk-11-jdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
@@ -441,7 +441,7 @@ jobs:
           name: Build RPMs
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             export CCI_VAADINJAVAMAXMEM=768m
@@ -476,7 +476,7 @@ jobs:
           name: Build RPMs
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             export CCI_VAADINJAVAMAXMEM=768m
