@@ -110,6 +110,8 @@ commands:
           name: Smoke Tests
           no_output_timeout: 30m
           command: |
+            echo JAVA_HOME=$JAVA_HOME
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             .circleci/scripts/smoke.sh << parameters.minimal >>
       - run:
           name: Gather system logs
@@ -158,6 +160,8 @@ commands:
       - run:
           name: Compile OpenNMS
           command: |
+            echo JAVA_HOME=$JAVA_HOME
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             mvn clean -DskipTests=true
             << parameters.node-memory >>
             ./compile.pl -DskipTests=true -Dbuild.skip.tarball=true \
@@ -171,6 +175,8 @@ commands:
             # so that the artifacts required to run the smoke tests are cached as well without the need
             # to maintain another cache
           command: |
+            echo JAVA_HOME=$JAVA_HOME
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             cd smoke-test && mvn install -DskipTests=true -DskipITs=true
       - save-maven-cache
       - save-nodejs-cache
@@ -254,6 +260,8 @@ commands:
           name: Integration Tests
           no_output_timeout: 1.0h
           command: |
+            echo JAVA_HOME=$JAVA_HOME
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export CCI_CODE_COVERAGE=<< parameters.run-code-coverage >>
             export CCI_RERUN_FAILTEST=<< parameters.rerun-failtest-count >>
             export CCI_FAILURE_OPTION=<< parameters.failure-option >>
@@ -389,6 +397,8 @@ jobs:
       - run:
           name: Build RPMs
           command: |
+            echo JAVA_HOME=$JAVA_HOME
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             ./makerpm.sh -a -d -S tools/packages/opennms/opennms.spec
@@ -420,6 +430,8 @@ jobs:
       - run:
           name: Build RPMs
           command: |
+            echo JAVA_HOME=$JAVA_HOME
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             export CCI_VAADINJAVAMAXMEM=768m
@@ -452,6 +464,8 @@ jobs:
       - run:
           name: Build RPMs
           command: |
+            echo JAVA_HOME=$JAVA_HOME
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             export CCI_VAADINJAVAMAXMEM=768m
