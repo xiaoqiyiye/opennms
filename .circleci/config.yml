@@ -112,6 +112,7 @@ commands:
           command: |
             echo JAVA_HOME=$JAVA_HOME
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            sudo apt -y install openjdk-11-jdk
             .circleci/scripts/smoke.sh << parameters.minimal >>
       - run:
           name: Gather system logs
@@ -162,6 +163,7 @@ commands:
           command: |
             echo JAVA_HOME=$JAVA_HOME
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            sudo apt -y install openjdk-11-jdk
             mvn clean -DskipTests=true
             << parameters.node-memory >>
             ./compile.pl -DskipTests=true -Dbuild.skip.tarball=true \
@@ -177,6 +179,7 @@ commands:
           command: |
             echo JAVA_HOME=$JAVA_HOME
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            sudo apt -y install openjdk-11-jdk
             cd smoke-test && mvn install -DskipTests=true -DskipITs=true
       - save-maven-cache
       - save-nodejs-cache
@@ -405,6 +408,7 @@ jobs:
           command: |
             echo JAVA_HOME=$JAVA_HOME
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+            sudo apt -y install openjdk-11-jdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             ./makerpm.sh -a -d -S tools/packages/opennms/opennms.spec
@@ -441,6 +445,7 @@ jobs:
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             export CCI_VAADINJAVAMAXMEM=768m
+            sudo apt -y install openjdk-11-jdk
             ./makerpm.sh -a -d -S tools/packages/minion/minion.spec
       - setup_remote_docker:
           docker_layer_caching: true
@@ -475,6 +480,7 @@ jobs:
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             export CCI_VAADINJAVAMAXMEM=768m
+            sudo apt -y install openjdk-11-jdk
             ./makerpm.sh -a -d -S tools/packages/sentinel/sentinel.spec
       - setup_remote_docker:
           docker_layer_caching: true
