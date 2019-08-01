@@ -163,7 +163,7 @@ commands:
           command: |
             echo JAVA_HOME=$JAVA_HOME
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-            sudo apt -y install openjdk-11-jdk
+            apt -y install openjdk-11-jdk
             mvn clean -DskipTests=true
             << parameters.node-memory >>
             ./compile.pl -DskipTests=true -Dbuild.skip.tarball=true \
