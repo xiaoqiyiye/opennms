@@ -331,6 +331,7 @@ workflows:
             - horizon-package-build
             - minion-package-build
             - sentinel-package-build
+            - integration-test
           filters:
             branches:
               only:
@@ -345,6 +346,7 @@ workflows:
             - horizon-package-build
             - minion-package-build
             - sentinel-package-build
+            - integration-test
           filters:
             branches:
               ignore:
