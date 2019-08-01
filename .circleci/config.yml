@@ -207,11 +207,12 @@ commands:
           no_output_timeout: 1.0h
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+            sudo apt -y install openjdk-11-jdk
+            ls -l /usr/lib/jvm
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
             export CCI_CODE_COVERAGE=<< parameters.run-code-coverage >>
             export CCI_RERUN_FAILTEST=<< parameters.rerun-failtest-count >>
             export CCI_FAILURE_OPTION=<< parameters.failure-option >>
-            sudo apt -y install openjdk-11-jdk
             .circleci/scripts/itest.sh
       - run:
           name: Gather test results
@@ -267,11 +268,12 @@ commands:
           no_output_timeout: 1.0h
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+            sudo apt -y install openjdk-11-jdk
+            ls -l /usr/lib/jvm
+            export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
             export CCI_CODE_COVERAGE=<< parameters.run-code-coverage >>
             export CCI_RERUN_FAILTEST=<< parameters.rerun-failtest-count >>
             export CCI_FAILURE_OPTION=<< parameters.failure-option >>
-            sudo apt -y install openjdk-11-jdk
             .circleci/scripts/itest.sh
       - run:
           name: Gather test results
@@ -407,8 +409,8 @@ jobs:
           name: Build RPMs
           command: |
             echo JAVA_HOME=$JAVA_HOME
+            yum -y install java-11-openjdk-devel
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
-            sudo apt -y install openjdk-11-jdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             ./makerpm.sh -a -d -S tools/packages/opennms/opennms.spec
@@ -441,11 +443,11 @@ jobs:
           name: Build RPMs
           command: |
             echo JAVA_HOME=$JAVA_HOME
+            yum -y install java-11-openjdk-devel
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             export CCI_VAADINJAVAMAXMEM=768m
-            sudo apt -y install openjdk-11-jdk
             ./makerpm.sh -a -d -S tools/packages/minion/minion.spec
       - setup_remote_docker:
           docker_layer_caching: true
@@ -476,11 +478,11 @@ jobs:
           name: Build RPMs
           command: |
             echo JAVA_HOME=$JAVA_HOME
+            yum -y install java-11-openjdk-devel
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
             export NODE_OPTIONS=--max_old_space_size=1024
             export CCI_MAXCPU=4
             export CCI_VAADINJAVAMAXMEM=768m
-            sudo apt -y install openjdk-11-jdk
             ./makerpm.sh -a -d -S tools/packages/sentinel/sentinel.spec
       - setup_remote_docker:
           docker_layer_caching: true
