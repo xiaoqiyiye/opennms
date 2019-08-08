@@ -399,13 +399,11 @@ public class TrapHandlerITCase implements InitializingBean {
     @Test
     @DirtiesContext
     public void testNodeGainedModifiesIpMgr() throws Exception {
-        long nodeId = 1;
-
-        anticipateEvent("uei.opennms.org/default/trap", m_ip, nodeId);
+        anticipateEvent("uei.opennms.org/default/trap", m_ip, m_nodeId);
 
         Event event =
             anticipateEvent(EventConstants.NODE_GAINED_INTERFACE_EVENT_UEI,
-                    m_ip, nodeId);
+                    m_ip, m_nodeId);
         m_eventMgr.sendNow(event);
 
         try {
