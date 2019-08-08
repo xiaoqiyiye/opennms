@@ -40,6 +40,7 @@ import org.junit.runner.RunWith;
 import org.opennms.core.spring.BeanUtils;
 import org.opennms.core.test.MockLogAppender;
 import org.opennms.core.test.OpenNMSJUnit4ClassRunner;
+import org.opennms.core.test.db.annotations.JUnitTemporaryDatabase;
 import org.opennms.netmgt.config.provisiond.RequisitionDef;
 import org.opennms.netmgt.dao.api.ProvisiondConfigurationDao;
 import org.opennms.netmgt.dao.mock.EventAnticipator;
@@ -107,6 +108,7 @@ public class ImportSchedulerIT implements InitializingBean {
     }
 
     @Test
+    @JUnitTemporaryDatabase
     public void createJobAndVerifyImportJobFactoryIsRegistered() throws SchedulerException, InterruptedException {
         
         RequisitionDef def = m_dao.getDefs().get(0);
@@ -191,6 +193,7 @@ public class ImportSchedulerIT implements InitializingBean {
     }
 
     @Test
+    @JUnitTemporaryDatabase
     public void buildImportSchedule() throws SchedulerException, InterruptedException {
         // Add a simple definition to the configuration that attempts
         // to import a non existent file every 5 seconds
