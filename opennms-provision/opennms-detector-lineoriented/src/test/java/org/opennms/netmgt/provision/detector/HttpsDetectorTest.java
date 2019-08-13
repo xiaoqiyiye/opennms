@@ -32,7 +32,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -50,7 +50,6 @@ import org.opennms.core.utils.InetAddressUtils;
 import org.opennms.netmgt.provision.DetectFuture;
 import org.opennms.netmgt.provision.detector.simple.HttpsDetector;
 import org.opennms.netmgt.provision.detector.simple.HttpsDetectorFactory;
-import org.opennms.netmgt.provision.server.SSLServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -62,16 +61,13 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:/META-INF/opennms/detectors.xml"})
 public class HttpsDetectorTest {
-    private static final int SSL_PORT = 7142;
-
     @Autowired
     private HttpsDetectorFactory m_detectorFactory;
     
     private HttpsDetector m_detector;
-    private SSLServer m_server;
 
     @Rule
-    public WireMockRule m_wireMockRule = new WireMockRule(wireMockConfig().httpsPort(SSL_PORT));
+    public WireMockRule m_wireMockRule = new WireMockRule(options().dynamicPort().dynamicHttpsPort());
 
     @Rule
     public TestName m_testName = new TestName();
@@ -101,8 +97,9 @@ public class HttpsDetectorTest {
         MockLogAppender.setupLogging();
         m_detector = m_detectorFactory.createDetector(new HashMap<>());
 
+
         /* make sure defaults are initialized */
-        m_detector.setPort(SSL_PORT);
+        m_detector.setPort(m_wireMockRule.httpsPort());
         m_detector.setUseSSLFilter(true);
         m_detector.setUrl("/");
         m_detector.setCheckRetCode(false);
@@ -112,21 +109,12 @@ public class HttpsDetectorTest {
 
     @After
     public void tearDown() throws IOException {
-        if(m_server != null) {
-            m_server.stopServer();
-            m_server = null;
-            try {
-                Thread.sleep(100);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
         System.out.println("------------------- end " + m_testName.getMethodName() + " -----------------------");
     }
 
     @Test(timeout=20000)
     public void testDetectorFailWrongPort() throws Exception {
-        m_detector.setPort(2000);
+        m_detector.setPort(m_wireMockRule.httpsPort()-1);
         m_detector.init();
 
         stubFor(get(urlEqualTo("/")).willReturn(getOKResponse()));
@@ -193,7 +181,7 @@ public class HttpsDetectorTest {
     public void testDetectorSucessCheckCodeTrue() throws Exception {
         m_detector.setCheckRetCode(true);
         m_detector.setUrl("http://localhost/");
-        m_detector.setPort(SSL_PORT);
+        m_detector.setPort(m_wireMockRule.httpsPort());
         m_detector.init();
         m_detector.setIdleTime(1000);
 
