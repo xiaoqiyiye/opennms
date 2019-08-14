@@ -35,7 +35,7 @@ import org.opennms.netmgt.provision.DetectFuture;
 import org.opennms.netmgt.provision.DetectFutureListener;
 
 /**
- * <p>DetectFutureNettyImpl class.</p>
+ * <p>DetectFutureFailedImpl class.</p>
  *
  * @author Seth
  */
