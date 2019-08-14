@@ -1217,7 +1217,6 @@
     <ecjVersion>4.4.2</ecjVersion>
     <eclipseGeminiVersion>2.0.0.RELEASE</eclipseGeminiVersion>
     <eclipselinkVersion>2.5.1</eclipselinkVersion>
-    <elasticsearchNettyVersion>4.1.30.Final</elasticsearchNettyVersion>
     <felixBridgeVersion>4.0.4</felixBridgeVersion>
     <felixProxyVersion>3.0.4</felixProxyVersion>
     <fopVersion>1.0</fopVersion>
@@ -1267,7 +1266,7 @@
     <mapstructVersion>1.3.0.Final</mapstructVersion>
     <minaVersion>2.0.16</minaVersion>
     <mockitoVersion>1.10.19</mockitoVersion>
-    <netty4Version>4.1.37.Final</netty4Version>
+    <netty4Version>4.1.39.Final</netty4Version>
     <newtsVersion>1.5.1</newtsVersion>
     <paxExamVersion>4.13.1</paxExamVersion>
     <paxSwissboxVersion>1.8.2</paxSwissboxVersion>
@@ -3898,36 +3897,6 @@
         <groupId>mx4j</groupId>
         <artifactId>mx4j-tools</artifactId>
         <version>3.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-all</artifactId>
-        <version>${netty4Version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec</artifactId>
-        <version>${netty4Version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport</artifactId>
-        <version>${netty4Version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler</artifactId>
-        <version>${netty4Version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-buffer</artifactId>
-        <version>${netty4Version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-common</artifactId>
-        <version>${netty4Version}</version>
       </dependency>
       <dependency>
         <groupId>com.novell.ldap</groupId>

@@ -17,6 +17,12 @@
 
    <dependencies>
      <dependency>
+       <groupId>org.opennms.dependencies</groupId>
+       <artifactId>netty-dependencies</artifactId>
+       <version>${project.version}</version>
+       <type>pom</type>
+     </dependency>
+     <dependency>
        <groupId>org.slf4j</groupId>
        <artifactId>slf4j-api</artifactId>
      </dependency>
@@ -50,46 +56,6 @@
        <groupId>org.elasticsearch.plugin</groupId>
        <artifactId>aggs-matrix-stats-client</artifactId>
        <version>${elasticsearchVersion}</version>
-     </dependency>
-     <dependency>
-       <groupId>io.netty</groupId>
-       <artifactId>netty-all</artifactId>
-       <version>${elasticsearchNettyVersion}</version>
-     </dependency>
-     <dependency>
-       <groupId>io.netty</groupId>
-       <artifactId>netty-codec</artifactId>
-       <version>${elasticsearchNettyVersion}</version>
-     </dependency>
-     <dependency>
-       <groupId>io.netty</groupId>
-       <artifactId>netty-codec-http</artifactId>
-       <version>${elasticsearchNettyVersion}</version>
-     </dependency>
-     <dependency>
-       <groupId>io.netty</groupId>
-       <artifactId>netty-transport</artifactId>
-       <version>${elasticsearchNettyVersion}</version>
-     </dependency>
-     <dependency>
-       <groupId>io.netty</groupId>
-       <artifactId>netty-resolver</artifactId>
-       <version>${elasticsearchNettyVersion}</version>
-     </dependency>
-     <dependency>
-       <groupId>io.netty</groupId>
-       <artifactId>netty-handler</artifactId>
-       <version>${elasticsearchNettyVersion}</version>
-     </dependency>
-     <dependency>
-       <groupId>io.netty</groupId>
-       <artifactId>netty-buffer</artifactId>
-       <version>${elasticsearchNettyVersion}</version>
-     </dependency>
-     <dependency>
-       <groupId>io.netty</groupId>
-       <artifactId>netty-common</artifactId>
-       <version>${elasticsearchNettyVersion}</version>
      </dependency>
      <dependency>
        <groupId>org.apache.logging.log4j</groupId>

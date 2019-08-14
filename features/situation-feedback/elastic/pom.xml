@@ -79,57 +79,11 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-    <!--
-      A parent module defines netty-all with a specific verison, but Elastic requires
-      a different version. We overwrite it here manually so that the proper dependencies
-      are pulled in.
-    -->
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-all</artifactId>
-      <version>${elasticsearchNettyVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-codec</artifactId>
-      <version>${elasticsearchNettyVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-codec-http</artifactId>
-      <version>${elasticsearchNettyVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-      <version>${elasticsearchNettyVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-resolver</artifactId>
-      <version>${elasticsearchNettyVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-handler</artifactId>
-      <version>${elasticsearchNettyVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
-      <version>${elasticsearchNettyVersion}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-common</artifactId>
-      <version>${elasticsearchNettyVersion}</version>
+      <groupId>org.opennms.dependencies</groupId>
+      <artifactId>netty-dependencies</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
       <scope>test</scope>
     </dependency>
     <dependency>
