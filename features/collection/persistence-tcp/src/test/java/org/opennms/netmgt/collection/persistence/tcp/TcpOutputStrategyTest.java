@@ -33,7 +33,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,22 +43,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFactory;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.jboss.netty.handler.codec.protobuf.ProtobufDecoder;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
@@ -77,11 +65,20 @@ import org.opennms.netmgt.rrd.tcp.PerformanceDataProtos.PerformanceDataReadings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.jayway.awaitility.core.ConditionTimeoutException;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
 
 @RunWith(OpenNMSJUnit4ClassRunner.class)
-@ContextConfiguration(locations={
+@ContextConfiguration(locations = {
         "classpath:/META-INF/opennms/applicationContext-soa.xml",
         "classpath:/META-INF/opennms/applicationContext-timeseries-tcp.xml"
 })
@@ -96,35 +93,43 @@ public class TcpOutputStrategyTest {
     private static List<PerformanceDataReadings> allReadings = new ArrayList<>();
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setupClass() throws UnknownHostException, InterruptedException {
         // Setup a quick Netty TCP server that decodes the protobuf messages
         // and appends these to a list when received
-        ChannelFactory factory = new NioServerSocketChannelFactory();
-        ServerBootstrap bootstrap = new ServerBootstrap(factory);
-        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-            public ChannelPipeline getPipeline() {
-                return Channels.pipeline(
-                        new ProtobufDecoder(PerformanceDataReadings.getDefaultInstance()),
-                        new PerfDataServerHandler());
+        //ChannelFactory factory = new NioServerSocketChannelFactory();
+        EventLoopGroup group = new NioEventLoopGroup();
+        ServerBootstrap bootstrap = new ServerBootstrap();
+        InetSocketAddress addr = new InetSocketAddress(InetAddress.getLocalHost(), 0);
+
+        bootstrap.group(group);
+        bootstrap.channel(NioServerSocketChannel.class);
+        bootstrap.localAddress(addr);
+
+        bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel socketChannel) throws Exception {
+                socketChannel.pipeline().addLast(new ProtobufDecoder(PerformanceDataReadings.getDefaultInstance()));
+                socketChannel.pipeline().addLast(new PerfDataServerHandler());
             }
         });
-        bootstrap.setOption("reuseAddress", true);
-        Channel channel = bootstrap.bind(new InetSocketAddress(0));
-        InetSocketAddress addr = (InetSocketAddress)channel.getLocalAddress();
+        bootstrap.option(ChannelOption.SO_REUSEADDR, true);
+        ChannelFuture channelFuture = bootstrap.bind().sync();
+        InetSocketAddress localAddress = (InetSocketAddress) channelFuture.channel().localAddress();
+
 
         // Point the TCP exporter to our server
         System.setProperty("org.opennms.rrd.tcp.host", addr.getHostString());
-        System.setProperty("org.opennms.rrd.tcp.port", Integer.toString(addr.getPort()));
+        System.setProperty("org.opennms.rrd.tcp.port", Integer.toString(localAddress.getPort()));
         // Always use queueing during these tests
         System.setProperty("org.opennms.rrd.usequeue", Boolean.TRUE.toString());
         // Use the temporary folder as the base directory
         System.setProperty("rrd.base.dir", tempFolder.getRoot().getAbsolutePath());
     }
 
-    public static class PerfDataServerHandler extends SimpleChannelHandler {
+    public static class PerfDataServerHandler extends SimpleChannelInboundHandler<PerformanceDataReadings> {
         @Override
-        public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
-            allReadings.add((PerformanceDataReadings) e.getMessage());
+        public void channelRead0(ChannelHandlerContext ctx, PerformanceDataReadings msgs) {
+            allReadings.add(msgs);
         }
     }
 
@@ -136,7 +141,7 @@ public class TcpOutputStrategyTest {
         String owner = "192.168.1.1";
         MockCollectionAgent agent = new MockCollectionAgent(1, "n1", InetAddressUtils.addr(owner));
         CollectionSetBuilder builder = new CollectionSetBuilder(agent);
-        NodeLevelResource node = new NodeLevelResource(agent.getNodeId());  
+        NodeLevelResource node = new NodeLevelResource(agent.getNodeId());
         InterfaceLevelResource eth0 = new InterfaceLevelResource(node, "eth0");
         builder.withNumericAttribute(eth0, "mib2-interfaces", "ifInErrors", 0.0, AttributeType.COUNTER);
         builder.withStringAttribute(eth0, "mib2-interfaces", "ifSpeed", "10000000");
@@ -167,21 +172,21 @@ public class TcpOutputStrategyTest {
 
         reading = readings.getMessage(1);
         assertEquals(PerformanceDataReading.newBuilder()
-            .setPath(Paths.get(tempFolder.getRoot().getAbsolutePath(), "1", "eth0", "ifSpeed").toString())
-            .setOwner(owner)
-            .setTimestamp(reading.getTimestamp())
-            .addAllDblValue(Collections.emptyList())
-            .addAllStrValue(Arrays.asList("10000000"))
-            .build(), reading);
+                .setPath(Paths.get(tempFolder.getRoot().getAbsolutePath(), "1", "eth0", "ifSpeed").toString())
+                .setOwner(owner)
+                .setTimestamp(reading.getTimestamp())
+                .addAllDblValue(Collections.emptyList())
+                .addAllStrValue(Arrays.asList("10000000"))
+                .build(), reading);
 
         reading = readings.getMessage(2);
         assertEquals(PerformanceDataReading.newBuilder()
-            .setPath(Paths.get(tempFolder.getRoot().getAbsolutePath(), "1", "eth0", "ifHighSpeed").toString())
-            .setOwner(owner)
-            .setTimestamp(reading.getTimestamp())
-            .addAllDblValue(Collections.emptyList())
-            .addAllStrValue(Arrays.asList("10"))
-            .build(), reading);
+                .setPath(Paths.get(tempFolder.getRoot().getAbsolutePath(), "1", "eth0", "ifHighSpeed").toString())
+                .setOwner(owner)
+                .setTimestamp(reading.getTimestamp())
+                .addAllDblValue(Collections.emptyList())
+                .addAllStrValue(Arrays.asList("10"))
+                .build(), reading);
 
         // Persist with storeByGroup
         persist(collectionSet, true);
