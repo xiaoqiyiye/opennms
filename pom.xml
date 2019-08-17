@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.opennms</groupId>
   <artifactId>opennms</artifactId>
-  <version>25.0.0-SNAPSHOT</version>
+  <version>26.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>OpenNMS</name>
   <url>http://opennms.org/</url>
@@ -906,6 +906,8 @@
             https://jira.atlassian.com/browse/BAM-15446
           -->
           <forkCount>1</forkCount>
+          <!-- We don't reuse forks - any given test should not take longer than the given timeout -->
+          <forkedProcessTimeoutInSeconds>${test.fork.timeout}</forkedProcessTimeoutInSeconds>
           <reuseForks>false</reuseForks>
           <rerunFailingTestsCount>${ci.rerunFailingTestsCount}</rerunFailingTestsCount>
           <skipITs>${skipITs}</skipITs>
@@ -1108,7 +1110,7 @@
     <install.version>${project.version}</install.version>
     <display.version>${install.version}</display.version>
     <opennms.home>${dist.dir}/${dist.name}</opennms.home>
-    <opennms.osgi.version>25.0.0.SNAPSHOT</opennms.osgi.version>
+    <opennms.osgi.version>26.0.0.SNAPSHOT</opennms.osgi.version>
     <maven.metadata.legacy>true</maven.metadata.legacy>
     <root.dir>${project.basedir}</root.dir>
     <dist.dir>${root.dir}/target</dist.dir>
@@ -1188,6 +1190,7 @@
     <batikVersion>1.7</batikVersion>
     <bsfVersion>2.4.0</bsfVersion>
     <bsonVersion>3.5.0</bsonVersion>
+    <caffeineVersion>2.8.0</caffeineVersion>
     <camelVersion>2.19.1</camelVersion>
     <cassandraUnitVersion>3.11.2.0</cassandraUnitVersion>
     <!-- Match Newts version -->
@@ -1334,9 +1337,11 @@
     <npmVersion>6.4.1</npmVersion>
     <yarnVersion>v1.16.0</yarnVersion>
 
-    <!-- CircleCI Settings -->
+    <!-- CI Settings -->
     <ci.instance>0</ci.instance>
     <ci.rerunFailingTestsCount>0</ci.rerunFailingTestsCount>
+    <!-- Limit ITs to 30 minutes by default -->
+    <test.fork.timeout>1800</test.fork.timeout>
   </properties>
 
   <profiles>
@@ -3060,6 +3065,11 @@
         <groupId>org.mongodb</groupId>
         <artifactId>bson</artifactId>
         <version>${bsonVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>caffeine</artifactId>
+        <version>${caffeineVersion}</version>
       </dependency>
       <dependency>
         <groupId>cglib</groupId>
