@@ -213,6 +213,7 @@ commands:
             export CCI_CODE_COVERAGE=<< parameters.run-code-coverage >>
             export CCI_RERUN_FAILTEST=<< parameters.rerun-failtest-count >>
             export CCI_FAILURE_OPTION=<< parameters.failure-option >>
+            export MAVEN_OPTS="-Xms2560m -Xmx2560m -XX:ReservedCodeCacheSize=512m -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -XX:-UseGCOverheadLimit -XX:+UseParallelGC -XX:+UseParallelOldGC"
             .circleci/scripts/itest.sh
       - run:
           name: Gather test results
