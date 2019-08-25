@@ -207,7 +207,13 @@ commands:
           no_output_timeout: 1.0h
           command: |
             echo JAVA_HOME=$JAVA_HOME
+            echo ls -l /usr/lib/jvm
+            ls -l /usr/lib/jvm
+            echo sudo apt search --names-only '^openjdk-.*'
+            sudo apt search --names-only '^openjdk-.*'
+            echo sudo apt -y install openjdk-11-jdk
             sudo apt -y install openjdk-11-jdk
+            echo ls -l /usr/lib/jvm
             ls -l /usr/lib/jvm
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
             export CCI_CODE_COVERAGE=<< parameters.run-code-coverage >>
@@ -269,7 +275,19 @@ commands:
           no_output_timeout: 1.0h
           command: |
             echo JAVA_HOME=$JAVA_HOME
-            sudo apt -y install openjdk-11-jdk
+            sudo apt-get install -y software-properties-common
+            wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | sudo apt-key add -
+            sudo add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
+            echo sudo apt-get update
+            sudo apt-get update
+            echo ls -l /usr/lib/jvm
+            ls -l /usr/lib/jvm
+            echo sudo apt search OpenJDK
+            sudo apt search OpenJDK
+            echo sudo apt search java
+            sudo apt search java
+            sudo apt -y install adoptopenjdk-11-hotspot
+            echo ls -l /usr/lib/jvm
             ls -l /usr/lib/jvm
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
             export CCI_CODE_COVERAGE=<< parameters.run-code-coverage >>
@@ -326,12 +344,15 @@ workflows:
       - horizon-package-build:
           requires:
             - build
+            - integration-test
       - minion-package-build:
           requires:
             - build
+            - integration-test
       - sentinel-package-build:
           requires:
             - build
+            - integration-test
       - integration-test:
           requires:
             - build
