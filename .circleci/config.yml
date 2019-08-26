@@ -286,7 +286,8 @@ commands:
             sudo apt search OpenJDK
             echo sudo apt search java
             sudo apt search java
-            sudo apt -y install adoptopenjdk-11-hotspot
+            sudo apt -y install adoptopenjdk-11-hotspot || true
+            sudo apt -y install openjdk-11-jdk || true
             echo ls -l /usr/lib/jvm
             ls -l /usr/lib/jvm
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
