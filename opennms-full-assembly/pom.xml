@@ -596,6 +596,7 @@
                 <!-- Include the OpenNMS Minion features produced by container/features/pom.xml -->
                 <feature>minion-core-api</feature>
                 <feature>opennms-dao-minion</feature>
+                <feature>opennms-bmp-persistence-elastic</feature>
               </features>
               <repository>${project.build.directory}/opennms-repo</repository>
             </configuration>
@@ -1035,6 +1036,11 @@
     <dependency>
       <groupId>org.opennms.features</groupId>
       <artifactId>org.opennms.features.karaf-health</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opennms.features.bmp</groupId>
+      <artifactId>org.opennms.features.bmp.elastic</artifactId>
       <version>${project.version}</version>
     </dependency>
 
