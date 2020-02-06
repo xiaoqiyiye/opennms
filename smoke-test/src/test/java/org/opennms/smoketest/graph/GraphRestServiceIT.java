@@ -381,7 +381,7 @@ public class GraphRestServiceIT extends OpenNMSSeleniumIT {
     @Test
     public void verifyStatusExposureBsm() {
         try {
-            karafShell.runCommand("opennms-bsm:generate-hierarchies 5 2");
+            karafShell.runCommand("opennms:bsm-generate-hierarchies 5 2");
 
             // Fetch data
             final JSONObject query = new JSONObject().put("semanticZoomLevel", 1);
@@ -396,7 +396,7 @@ public class GraphRestServiceIT extends OpenNMSSeleniumIT {
                     .content("vertices", Matchers.hasSize(1))
                     .content("vertices[0].status", Matchers.is("Normal"));
         } finally {
-            karafShell.runCommand("opennms-bsm:delete-generated-hierarchies");
+            karafShell.runCommand("opennms:bsm-delete-hierarchies");
         }
     }
 
@@ -431,7 +431,7 @@ public class GraphRestServiceIT extends OpenNMSSeleniumIT {
         });
 
         // Force application provider to reload (otherwise we have to wait until cache is invalidated)
-        karafShell.runCommand("opennms-graph:force-reload --container application");
+        karafShell.runCommand("opennms:graph-force-reload --container application");
 
         // Fetch data nothing down
         final JSONObject query = new JSONObject()
@@ -468,7 +468,7 @@ public class GraphRestServiceIT extends OpenNMSSeleniumIT {
 
         // Take service down, reload graph and verify
         restClient.sendEvent(nodeLostServiceEvent);
-        karafShell.runCommand("opennms-graph:force-reload --container application");
+        karafShell.runCommand("opennms:graph-force-reload --container application");
         given().log().ifValidationFails()
                 .body(query.toString())
                 .contentType(ContentType.JSON)
@@ -487,7 +487,7 @@ public class GraphRestServiceIT extends OpenNMSSeleniumIT {
 
         // Take node down, reload graph and verify
         restClient.sendEvent(nodeDownEvent);
-        karafShell.runCommand("opennms-graph:force-reload --container application");
+        karafShell.runCommand("opennms:graph-force-reload --container application");
         given().log().ifValidationFails()
                 .body(query.toString())
                 .contentType(ContentType.JSON)
@@ -553,7 +553,7 @@ public class GraphRestServiceIT extends OpenNMSSeleniumIT {
     @Test
     public void verifyCustomJsonRenderer() {
         try {
-            karafShell.runCommand("opennms-bsm:generate-hierarchies 5 2");
+            karafShell.runCommand("opennms:bsm-generate-hierarchies 5 2");
             given().log().ifValidationFails()
                 .get("{container_id}/{namespace}", "bsm", "bsm")
                 .then()
@@ -567,7 +567,7 @@ public class GraphRestServiceIT extends OpenNMSSeleniumIT {
                 .content("vertices[3].reduceFunction.type", Matchers.is("highestseverity"))
                 .content("vertices[4].reduceFunction.type", Matchers.is("highestseverity"));
         } finally {
-            karafShell.runCommand("opennms-bsm:delete-generated-hierarchies");
+            karafShell.runCommand("opennms:bsm-delete-hierarchies");
         }
     }
 
